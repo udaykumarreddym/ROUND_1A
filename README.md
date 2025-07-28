@@ -1,7 +1,8 @@
 # 📄 Round 1A — Understand Your Document
 
 > **Track**: Document Structure Extraction  
-> **Participant**: Uday Kumar Reddy , Rukmangar 
+> **Participant**: Uday Kumar Reddy , Rukmangar
+> 
 > **Language**: Python 3.10  
 > **Runtime**: Docker (CPU-only, Offline)  
 > **Model Size**: None (Rule-based approach)

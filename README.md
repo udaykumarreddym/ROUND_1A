@@ -43,6 +43,7 @@ The output enables smarter document experiences like:
 │   ├── output_formatter.py        # JSON formatter
 ├── requirements.txt
 └── Dockerfile
+```
 
 ⚙️ Pipeline Summary
 <details> <summary>📥 <strong>Text Span Extraction</strong> (click to expand)</summary>
@@ -92,35 +93,22 @@ Deduplicates entries
 
 Sorts by page and text order
 
-Outputs valid JSON in the format:
-
-json
-Copy
-Edit
-{
-  "title": "Understanding AI",
-  "outline": [
-    { "level": "H1", "text": "Introduction", "page": 1 },
-    { "level": "H2", "text": "What is AI?", "page": 2 },
-    { "level": "H3", "text": "History of AI", "page": 3 }
-  ]
-}
+Outputs valid JSON in the format
 </details>
+
 🐳 Docker Usage
 ✅ Build the Docker Image
-bash
-Copy
-Edit
+```bash
 docker build --platform linux/amd64 -t mysolution:round1a .
+```
 ▶️ Run the Container
-bash
-Copy
-Edit
+```bash
 docker run --rm \
 -v $(pwd)/input:/app/input \
 -v $(pwd)/output:/app/output \
 --network none \
 mysolution:round1a
+```
 ✅ All PDFs in /input will be processed and corresponding .json files will be saved in /output.
 
 ✅ Constraint Compliance
@@ -133,13 +121,12 @@ Constraint	Status
 
 📚 Dependencies
 requirements.txt
-
-txt
-Copy
-Edit
+```
 pymupdf
 numpy
 pandas
+```
+
 🧠 Design Rationale
 ✅ Rule-based, deterministic logic — reliable, lightweight, and interpretable
 
@@ -168,5 +155,8 @@ Tested against:
 
 🙌 Author
 Uday Kumar Reddy
+
+Rukmangar
+
 B.Tech, 3rd Year — Computer Science (Data Science)
-Rukmangar Institute of Technology & Science
+

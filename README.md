@@ -154,6 +154,7 @@ Tested against:
 ➡️ Accuracy verified against the sample ground truth output.
 
 🙌 Author
+
 Uday Kumar Reddy
 
 Rukmangar

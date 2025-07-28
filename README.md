@@ -1,7 +1,7 @@
 # 📄 Round 1A — Understand Your Document
 
 > **Hackathon Theme:** *Connecting the Dots Through Docs*  
-> **👤 Team:** Solo — Uday Kumar Reddy  
+> **👤 Team:**  Web Alchemists  
 > **🎯 Track:** Document Structure Extraction  
 > **🧠 Language:** Python 3.10  
 > **🐳 Deployment:** Docker (AMD64, CPU-only, Offline)

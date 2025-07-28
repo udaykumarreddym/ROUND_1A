@@ -1,157 +1,90 @@
 # 📄 Round 1A — Understand Your Document
 
-> **Hackathon Theme:** *Connecting the Dots Through Docs*  
-> **👤 Team:**  Web Alchemists  
-> **🎯 Track:** Document Structure Extraction  
-> **🧠 Language:** Python 3.10  
-> **🐳 Deployment:** Docker (AMD64, CPU-only, Offline)
+> **Track**: Document Structure Extraction  
+> **Participant**: Uday Kumar Reddy , Rukmangar 
+> **Language**: Python 3.10  
+> **Runtime**: Docker (CPU-only, Offline)  
+> **Model Size**: None (Rule-based approach)
 
 ---
 
-![Python](https://img.shields.io/badge/Python-3.10-blue)
-![Docker](https://img.shields.io/badge/Docker-Ready-brightgreen)
-![Offline](https://img.shields.io/badge/Network-Offline-lightgrey)
-![Model Size](https://img.shields.io/badge/Model-None--Used-green)
+## 🧠 Approach
+
+This solution extracts a structured outline from any PDF document — including the **Title**, and all major headings like **H1**, **H2**, and **H3**, along with their **page numbers**.
+
+We followed a fully **rule-based approach**, optimized for offline execution, speed, and generalization across unknown documents.
+
+### The pipeline consists of 3 stages:
+
+1. **Text Span Extraction** (`extract_spans_from_pdf.py`)
+   - Uses `PyMuPDF` to extract text along with layout features.
+   - Computes normalized font size, bold/italic flags, indentation, and position within the page.
+   - Skips tables, footers, page numbers, and invalid spans.
+
+2. **Heading Detection** (`heading_detector.py`)
+   - Applies heuristics to classify spans as Title, H1, H2, or H3.
+   - Leverages:
+     - Font ranking and tolerance
+     - Numbering (e.g., `1.`, `2.3.1`)
+     - Formatting cues: Bold, Centered, Title Case
+     - Indentation and top margin
+   - Supports unnumbered headings like “Background”, “Summary”.
+
+3. **JSON Output Formatter** (`output_formatter.py`)
+   - Removes duplicates.
+   - Sorts output by page number and visual order.
+   - Saves final output in the required structured JSON format.
 
 ---
 
-## 🧠 Objective
+## 📦 Models or Libraries Used
 
-This project extracts a clean **hierarchical outline** from PDFs:
+### ✅ No machine learning models were used.
 
-- 📌 **Title**
-- 📑 **Headings**: `H1`, `H2`, `H3` with **page numbers**
+Instead, the system relies entirely on visual-textual cues and hand-crafted logic.
 
-The output enables smarter document experiences like:
+### 🛠️ Python Libraries:
 
-- 🔍 Semantic Search  
-- 🧠 Insight Generation  
-- 📄 Document Summarization
+- [`PyMuPDF`](https://pymupdf.readthedocs.io/) — PDF parsing and layout extraction
+- `numpy` — Feature aggregation
+- `pandas` — Span processing and alignment
+- `re`, `statistics`, `json` — Core Python libraries for text filtering, mode calculation, and output formatting
 
 ---
 
-## 🧱 Architecture Overview
+## 🐳 How to Build and Run (Documentation Only)
 
-```bash
-📂 round_1A/
-├── input/                    # Input PDFs (mounted by Docker)
-├── output/                   # Output JSON files (mounted by Docker)
-├── src/
-│   ├── main.py                     # Entry point — batch processor
-│   ├── extract_spans_from_pdf.py  # Layout + span extraction
-│   ├── heading_detector.py        # Rule-based heading classifier
-│   ├── output_formatter.py        # JSON formatter
-├── requirements.txt
-└── Dockerfile
-```
+> ⚠️ While your solution will be run using the **"Expected Execution"** command by the judges, the steps below are provided for clarity.
 
-⚙️ Pipeline Summary
-<details> <summary>📥 <strong>Text Span Extraction</strong> (click to expand)</summary>
-Uses PyMuPDF to parse text spans.
+### ✅ Step 1: Build Docker Image
 
-Captures layout metadata:
-
-Normalized font size
-
-Bold / Italic styling
-
-Center alignment
-
-Indentation
-
-Position on page
-
-Filters out:
-
-Tables
-
-Page numbers
-
-Dates / Footers / Headers
-
-</details> <details> <summary>🔍 <strong>Heading Detection (Rule-Based)</strong> (click to expand)</summary>
-Classifies spans into: Title, H1, H2, H3
-
-Key signals used:
-
-Font rank and size tolerance
-
-Heading numbering (e.g., 1., 2.1.3)
-
-Formatting cues: Bold, Centered, Title Case
-
-Indentation and top margin heuristics
-
-Handles edge cases:
-
-Short unnumbered headings (Summary, Background)
-
-Mixed layout formatting (e.g., left-aligned + bold)
-
-</details> <details> <summary>📦 <strong>JSON Structuring</strong> (click to expand)</summary>
-Deduplicates entries
-
-Sorts by page and text order
-
-Outputs valid JSON in the format
-</details>
-
-🐳 Docker Usage
-✅ Build the Docker Image
 ```bash
 docker build --platform linux/amd64 -t mysolution:round1a .
 ```
-▶️ Run the Container
-```bash
+
+### ▶️ Step 2: Run the Container
+
+```
 docker run --rm \
 -v $(pwd)/input:/app/input \
 -v $(pwd)/output:/app/output \
 --network none \
 mysolution:round1a
 ```
-✅ All PDFs in /input will be processed and corresponding .json files will be saved in /output.
+This will:
 
-✅ Constraint Compliance
-Constraint	Status
-📦 Model size ≤ 200MB	✅ No ML model used
-⏱️ Runtime ≤ 10s for 50-page PDF	✅ Fast performance
-🌐 No internet calls	✅ Fully offline
-🖥️ Platform: AMD64, CPU-only	✅ Docker compliant
-📁 Volumes: /input, /output	✅ Correctly mounted
+Process all .pdf files in /input
 
-📚 Dependencies
-requirements.txt
-```
-pymupdf
-numpy
-pandas
-```
+Generate a matching .json file for each in /output using the required format
 
-🧠 Design Rationale
-✅ Rule-based, deterministic logic — reliable, lightweight, and interpretable
+📌 Notes
+No internet or external API calls used
 
-🧠 Uses visual layout + text formatting cues for robust classification
+Executes under 10 seconds for ≤ 50-page PDFs
 
-💡 Carefully handles real-world edge cases:
+Fully compatible with amd64, CPU-only systems
 
-Short standalone headings
-
-Multi-line titles
-
-Inconsistent font usage
-
-🔧 Modular design — easy to plug in a model later (e.g., for Round 1B)
-
-🧪 Testing
-Tested against:
-
-✅ Simple academic papers
-
-✅ Deeply nested technical PDFs
-
-✅ PDFs with nonstandard layout or font usage
-
-➡️ Accuracy verified against the sample ground truth output.
+Easily extensible for multilingual or ML-based enhancement in Round 1B
 
 🙌 Author
 
@@ -159,5 +92,4 @@ Uday Kumar Reddy
 
 Rukmangar
 
-B.Tech, 3rd Year — Computer Science (Data Science)
-
+B.Tech 3rd Year, CSE (Data Science)

@@ -2,7 +2,6 @@
 
 > **Track**: Document Structure Extraction  
 > **Participant**: Uday Kumar Reddy , Rukmangar
-> 
 > **Language**: Python 3.10  
 > **Runtime**: Docker (CPU-only, Offline)  
 > **Model Size**: None (Rule-based approach)

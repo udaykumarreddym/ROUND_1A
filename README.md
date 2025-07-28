@@ -1,97 +1,172 @@
-📄 Round 1A — Understand Your Document
-Hackathon Theme: Connecting the Dots Through Docs
-Team: Solo — Uday Kumar Reddy
-Track: Document Structure Extraction
-Language: Python 3.10
-Deployment: Docker (AMD64, CPU-only, Offline)
+# 📄 Round 1A — Understand Your Document
 
-🧠 Objective
-This project extracts a clean hierarchical outline from PDFs, comprising:
-📌 Title
-📑 Headings: H1, H2, H3 with associated page numbers
-The output enables downstream tasks like semantic search, information retrieval, and document summarization — forming the foundation for later rounds.
+> **Hackathon Theme:** *Connecting the Dots Through Docs*  
+> **👤 Team:** Solo — Uday Kumar Reddy  
+> **🎯 Track:** Document Structure Extraction  
+> **🧠 Language:** Python 3.10  
+> **🐳 Deployment:** Docker (AMD64, CPU-only, Offline)
 
-🧱 Architecture Overview
+---
+
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![Docker](https://img.shields.io/badge/Docker-Ready-brightgreen)
+![Offline](https://img.shields.io/badge/Network-Offline-lightgrey)
+![Model Size](https://img.shields.io/badge/Model-None--Used-green)
+
+---
+
+## 🧠 Objective
+
+This project extracts a clean **hierarchical outline** from PDFs:
+
+- 📌 **Title**
+- 📑 **Headings**: `H1`, `H2`, `H3` with **page numbers**
+
+The output enables smarter document experiences like:
+
+- 🔍 Semantic Search  
+- 🧠 Insight Generation  
+- 📄 Document Summarization
+
+---
+
+## 🧱 Architecture Overview
+
+```bash
 📂 round_1A/
-├── input/                  # Input PDFs (mounted by Docker)
-├── output/                 # Output JSON files (mounted by Docker)
+├── input/                    # Input PDFs (mounted by Docker)
+├── output/                   # Output JSON files (mounted by Docker)
 ├── src/
-│   ├── main.py             # Entry point — batch processor
-│   ├── extract_spans_from_pdf.py   # Layout + span extraction
-│   ├── heading_detector.py         # Rule-based heading classifier
-│   ├── output_formatter.py         # JSON formatter
+│   ├── main.py                     # Entry point — batch processor
+│   ├── extract_spans_from_pdf.py  # Layout + span extraction
+│   ├── heading_detector.py        # Rule-based heading classifier
+│   ├── output_formatter.py        # JSON formatter
 ├── requirements.txt
 └── Dockerfile
 
 ⚙️ Pipeline Summary
-1. Text Span Extraction
-  Uses PyMuPDF to parse text spans
-  Captures layout metadata:
-  Font size (normalized), bold, italic
-  Indentation, center alignment
-  Position on page
-  Filtering: tables, page numbers, dates, noise
-2. Heading Detection (Rule-Based)
-  Classifies spans into: Title, H1, H2, H3
-  Logic combines:
-  Font rank and size tolerance
-  Numbering hierarchy (e.g., 1., 2.1.3)
-  Formatting clues (bold, centered, title case)
-  Indentation and top-margin heuristics
-  Handles unnumbered headings (Summary, Conclusion, etc.)
-3. JSON Structuring
-  Deduplicates headings
-  Sorts by page and order of appearance
-  Outputs clean JSON as per required format
+<details> <summary>📥 <strong>Text Span Extraction</strong> (click to expand)</summary>
+Uses PyMuPDF to parse text spans.
 
+Captures layout metadata:
+
+Normalized font size
+
+Bold / Italic styling
+
+Center alignment
+
+Indentation
+
+Position on page
+
+Filters out:
+
+Tables
+
+Page numbers
+
+Dates / Footers / Headers
+
+</details> <details> <summary>🔍 <strong>Heading Detection (Rule-Based)</strong> (click to expand)</summary>
+Classifies spans into: Title, H1, H2, H3
+
+Key signals used:
+
+Font rank and size tolerance
+
+Heading numbering (e.g., 1., 2.1.3)
+
+Formatting cues: Bold, Centered, Title Case
+
+Indentation and top margin heuristics
+
+Handles edge cases:
+
+Short unnumbered headings (Summary, Background)
+
+Mixed layout formatting (e.g., left-aligned + bold)
+
+</details> <details> <summary>📦 <strong>JSON Structuring</strong> (click to expand)</summary>
+Deduplicates entries
+
+Sorts by page and text order
+
+Outputs valid JSON in the format:
+
+json
+Copy
+Edit
+{
+  "title": "Understanding AI",
+  "outline": [
+    { "level": "H1", "text": "Introduction", "page": 1 },
+    { "level": "H2", "text": "What is AI?", "page": 2 },
+    { "level": "H3", "text": "History of AI", "page": 3 }
+  ]
+}
+</details>
 🐳 Docker Usage
-✅ Build
+✅ Build the Docker Image
+bash
+Copy
+Edit
 docker build --platform linux/amd64 -t mysolution:round1a .
-▶️ Run
+▶️ Run the Container
+bash
+Copy
+Edit
 docker run --rm \
-  -v $(pwd)/input:/app/input \
-  -v $(pwd)/output:/app/output \
-  --network none \
-  mysolution:round1a
-
-All .pdf files in /input are automatically processed.
-Outputs saved as .json in /output with the same filename.
+-v $(pwd)/input:/app/input \
+-v $(pwd)/output:/app/output \
+--network none \
+mysolution:round1a
+✅ All PDFs in /input will be processed and corresponding .json files will be saved in /output.
 
 ✅ Constraint Compliance
-Requirement	Status
-📦 Model size ≤ 200MB	✅ No models used (fully rule-based)
-⏱️ Runtime ≤ 10s for 50-page PDF	✅ Yes (tested with margin)
-🌐 Network-free operation	✅ Fully offline
-🖥️ Platform: linux/amd64, CPU-only	✅ Yes (via --platform flag)
-📁 Input/output volume mounts	✅ Compliant
+Constraint	Status
+📦 Model size ≤ 200MB	✅ No ML model used
+⏱️ Runtime ≤ 10s for 50-page PDF	✅ Fast performance
+🌐 No internet calls	✅ Fully offline
+🖥️ Platform: AMD64, CPU-only	✅ Docker compliant
+📁 Volumes: /input, /output	✅ Correctly mounted
 
 📚 Dependencies
 requirements.txt
+
+txt
+Copy
+Edit
 pymupdf
 numpy
 pandas
-
 🧠 Design Rationale
-✅ Rule-based approach ensures portability, speed, and small size
-🧠 Combines visual layout, font hierarchy, and text semantics
-💡 Handles real-world edge cases:
-Short headings without numbers
-Overlapping font sizes
-Mixed formatting (e.g., centered + bold)
+✅ Rule-based, deterministic logic — reliable, lightweight, and interpretable
+
+🧠 Uses visual layout + text formatting cues for robust classification
+
+💡 Carefully handles real-world edge cases:
+
+Short standalone headings
+
+Multi-line titles
+
+Inconsistent font usage
+
+🔧 Modular design — easy to plug in a model later (e.g., for Round 1B)
 
 🧪 Testing
-Tested on:
-✍️ Simple academic documents
-📊 Technical PDFs with nested headings
-⚠️ PDFs with missing or unordered font hierarchies
-Passed accuracy checks using provided sample outputs.
+Tested against:
 
-📌 Notes
-No AI model or training used — fully deterministic
-Easy to extend for multilingual or semantic enhancements (for Round 1B)
-Written for high interpretability and modularity
+✅ Simple academic papers
+
+✅ Deeply nested technical PDFs
+
+✅ PDFs with nonstandard layout or font usage
+
+➡️ Accuracy verified against the sample ground truth output.
 
 🙌 Author
 Uday Kumar Reddy
-Rukmangar
-B.Tech, 3rd Year (CSE - Data Science)
+B.Tech, 3rd Year — Computer Science (Data Science)
+Rukmangar Institute of Technology & Science
